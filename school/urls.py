@@ -17,7 +17,7 @@ urlpatterns=[
 	url(r'^logout/$',views.logout_view, name='logout_view'),
 	url(r'^dashboard/$',views.dashboard, name='dashboard'),
 	url(r'^dashboard-report/$',views.dashboard_report, name='dashboard_report'),
-	url(r'^upload/$',views.profile_upload, name='profile_upload'),
+	url(r'^data-upload/$',views.data_upload, name='data_upload'),
 ]
 
 
