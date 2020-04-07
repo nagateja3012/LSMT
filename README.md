@@ -14,3 +14,7 @@ source environmentname/bin/activate
 
 Activate environment and run the project
 
+
+# Git actions
+
+Downlaod code from 
