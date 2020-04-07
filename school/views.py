@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import login as auth_login
-from school.models import Dashboard,Profile
+from school.models import Dashboard
 from datetime import date
 import datetime
 from datetime import timedelta, time, date
@@ -33,6 +33,33 @@ def course(request):
 def teacher(request):
 	return render(request,'teacher.html',locals())
 
+
+def data_upload(request):
+    template = "data_upload.html"
+    data = Dashboard.objects.all()
+    prompt = {
+            'order': 'Order of the CSV should be date, expenses_details, receviable,payment',
+            'profiles': data    
+          }
+    if request.method == "GET":
+        return render(request, template, prompt)
+    csv_file = request.FILES['file']
+    if not csv_file.name.endswith('.csv'):
+        messages.error(request, 'THIS IS NOT A CSV FILE')
+    data_set = csv_file.read().decode('UTF-8')
+    io_string = io.StringIO(data_set)
+    next(io_string)
+    for column in csv.reader(io_string, delimiter=',', quotechar="|"):
+        _, created = Dashboard.objects.update_or_create(
+            date=column[0],
+            expenses_details=column[1],
+            receviable=column[2],
+            payment=column[3],
+        )
+    context = {}
+    return render(request, template, context)
+    # return render(request,'data_upload.html',locals())
+
 def report(request):
     board = Dashboard.objects.all()
     if request.method=="POST":
@@ -40,11 +67,11 @@ def report(request):
         total_listrec = []
         total_listpay = []      
         if value == "Telephone Bills":
-            board = Dashboard.objects.filter(heads = value)            
+            board = Dashboard.objects.filter(heads = value)
             total_recall = Dashboard.objects.filter(heads = value)
             for i in total_recall:
                 total_listrec.append(i.receviable)
-                total_recsum = sum(total_listrec)            
+                total_recsum = sum(total_listrec)
             total_payall = Dashboard.objects.filter(heads = value)
             for j in total_payall:
                 total_listpay.append(j.payment)
@@ -578,29 +605,4 @@ def dashboard_report(request):
             return render(request,'dashboard_reportdaily.html',locals())
     return render(request,'dashboard_reportdaily.html',locals())
 
-def profile_upload(request):
-    template = "profile_upload.html"
-    data = Profile.objects.all()
-    prompt = {
-            'order': 'Order of the CSV should be name, email, address,phone, profile',
-            'profiles': data    
-          }
-    if request.method == "GET":
-        return render(request, template, prompt)
-    csv_file = request.FILES['file']
-    if not csv_file.name.endswith('.csv'):
-        messages.error(request, 'THIS IS NOT A CSV FILE')
-    data_set = csv_file.read().decode('UTF-8')
-    io_string = io.StringIO(data_set)
-    next(io_string)
-    for column in csv.reader(io_string, delimiter=',', quotechar="|"):
-        _, created = Profile.objects.update_or_create(
-            name=column[0],
-            email=column[1],
-            address=column[2],
-            phone=column[3],
-            profile=column[4]
-        )
-    context = {}
-    return render(request, template, context)
 
