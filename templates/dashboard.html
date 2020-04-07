@@ -1,0 +1,162 @@
+{% extends "header.html" %}
+{% block title %}Kidzee School Guntur{% endblock %}
+{% block description %}{% endblock %}
+{% block keyword %}{% endblock %}
+{% load static %}
+{% load mathfilters %}
+{% block content %}
+<link href= 
+'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css' rel='stylesheet'> 
+<script src= "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"> </script> 
+<script src= "https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"> </script>
+<script> 
+    $(document).ready(function() { 
+        $(function() { 
+            $( "#my_date_picker" ).datepicker(); 
+        }); 
+    }) 
+</script>  
+<div class="container">
+	<div class="row">
+		<div class="col-sm-6 col-md-6 col-xs-12">
+			<table>
+				<thead>
+					<tr>
+						<form method="GET" action="/dashboard/">
+							<select style="border: 1px solid #000;" class="border_foot" name="select_month"  required="">
+	                            <option>-- Select --</option>
+	                            <option value="today">Today</option>
+		                        <option value="yesterday">Yesterday</option>
+		                        <option value="this_week">This Week</option>
+		                        <option value="last_week">Last Week</option>
+		                        <option value="this_month">This Month</option>
+		                        <option value="last_month">Last Month</option>
+		                        <option value="this_quarter">This Quarter</option>
+		                        <option value="last_quarter">Last Quarter</option>
+		                        <option value="this_year">This Year</option>
+		                        <option value="last_year">Last Year</option>
+	                        </select>
+	                        <button type="submit" value="submit">submit</button>
+                       	</form>
+   						 <!-- <th colspan="4" class="title_dash" style="background-color: #5d50c6 !important;">January 2020</th> -->
+  					</tr>
+  				</thead>
+				<thead style="background-color: #69bc5f !important;">
+					<tr>
+						<th width="15%" class="school_activity">Date</th>
+						<th width="30%" class="school_activity" >Details</th>
+						<th width="10%" class="school_activity">Receviable</th>
+						<th width="10%" class="school_activity">Payment</th>
+						<!-- <th width="10%" class="school_activity">Actions</th> -->
+					</tr>
+				</thead>
+				<tbody>
+					{% for board in board %}
+					<tr>
+						<td>{{board.date |date:'d-m-Y'}}</td>
+						<td style="text-align:left !important">{{board.expenses_details}}</td>
+						<td style="text-align:right !important">{{board.receviable}}</td>
+						<td style="text-align:right !important">{{board.payment}}</td>
+					</tr>
+					{% endfor %}
+					<tr>
+						<td></td>
+						<td style="text-align:left !important">Total</td>
+						<td style="text-align:right !important">{{total_recsum}}</td>
+						<td style="text-align:right !important">{{total_paysum}}</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td style="text-align:left !important">Balance</td>
+						<td></td>
+						<td style="text-align:right !important">{{diff_total}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="col-sm-6 col-md-6 col-xs-12">
+			<div class="enigma_footer_widget_title">
+				<p>Dashboard</p>
+			</div>
+			<form action="/dashboard/" method="POST" enctype="">
+				{% csrf_token %}
+				<table>
+					<thead style="background-color: #69bc5f !important; color: #fff; border-bottom: 1px solid #000;">
+						<tr>
+							<th class="school_activity">Date</th>
+							<th class="school_activity" >Details</th>
+							<th class="school_activity">head</th>
+							<th class="school_activity">receviable</th>
+							<th class="school_activity">payment</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><input class="border_foot" type="date" id="my_date_picker" name="date" placeholder="Enter MM/DD/YYYY" required=""></td>
+							<td><input class="border_foot" type="text" name="expenses_details" placeholder="Enter Expenses" required=""></td>
+							<td>
+							 	<select class="border_foot" name="heads" placeholder="Enter heads " required="">>
+	                                <option>Heads</option>
+	                                <option value="Salary">Salary</option>
+	                                <option value="Fee Collection">Fee Collection</option>
+	                                <option value="Current Bill">Current Bill</option>
+	                                <option value="Telephone Bills">Telephone Bills</option>
+	                                <option value="Misllanious">Misllanious</option>
+	                                <option value="suspense">Suspense</option>
+	                                <option value="Rent">Rent</option>
+	                                <option value="Transportation">Transportation</option>
+	                                <option value="Capitals">Capitals</option>
+	                                <option value="Loans">Loans</option>
+	                                <option value="Advances">Advances</option>
+	                            </select>
+                        	</td>
+							<td><input class="border_foot" id="rec" type="text" name="receviable"  placeholder="Enter Receviable"></td>
+							<td><input class="border_foot" id="pay" type="text" name="payment" placeholder="Enter Payment"></td>
+						</tr>
+					</tbody>
+				</table>
+				<button id="submit"  type="submit" class="Submit_form" value="Submit" onClick="return empty();"><b>SUBMIT</b></button>  
+			</form>
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function(){
+	$("#rec").click(function(){
+   		$("#pay").hide();
+   		$("#rec").attr('required', 'required')
+
+
+	});
+	$("#pay").click(function(){
+ 		$("#rec").hide();
+ 		$("#pay").attr('required', 'required')
+	});
+});
+</script>
+<script>
+function empty() {
+    var x;y;
+    x = document.getElementById("rec").value;
+    y = document.getElementById("pay").value;
+    if (x == "") {
+        alert("Enter a valid number");
+        return location.reload();
+    };
+    if (y == "") {
+        alert("Enter a valid number");
+        return location.reload();
+    };
+}
+</script>
+<!-- <script>
+function empty_pay() {
+    var x;
+    x = document.getElementById("pay").value;
+    if (x == "") {
+        alert("Enter a valid number");
+        return location.reload();
+    };
+}
+</script> -->
+{% endblock %}

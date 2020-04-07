@@ -1,0 +1,118 @@
+{% extends "header.html" %}
+{% block title %}Kidzee School Guntur{% endblock %}
+{% block description %}{% endblock %}
+{% block keyword %}{% endblock %}
+{% load static %}
+{% load mathfilters %}
+{% block content %}
+<link href= 
+'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css' rel='stylesheet'> 
+<script src= "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"> </script> 
+<script src= "https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"> </script>
+<script> 
+    $(document).ready(function() { 
+        $(function() { 
+            $( "#my_date_picker" ).datepicker(); 
+        }); 
+    }) 
+</script>  
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12 col-md-12 col-xs-12">
+			<table>
+				<thead>
+					<tr>
+						<form method="GET" action="/dashboard-report/">
+							<select style="border: 1px solid #000;" class="border_foot" name="select_month"  required="">
+	                            <option>-- Select --</option>
+	                            <option value="today">Today</option>
+		                        <option value="yesterday">Yesterday</option>
+		                        <option value="this_week">This Week</option>
+		                        <option value="last_week">Last Week</option>
+		                        <option value="this_month">This Month</option>
+		                        <option value="last_month">Last Month</option>
+		                        <option value="this_quarter">This Quarter</option>
+		                        <option value="last_quarter">Last Quarter</option>
+		                        <option value="this_year">This Year</option>
+		                        <option value="last_year">Last Year</option>
+	                        </select>
+	                        <button type="submit" value="submit">submit</button>
+                       	</form>
+   						 <!-- <th colspan="4" class="title_dash" style="background-color: #5d50c6 !important;">January 2020</th> -->
+  					</tr>
+  				</thead>
+				<thead style="background-color: #69bc5f !important;">
+					<tr>
+						<th width="15%" class="school_activity">Date</th>
+						<th width="30%" class="school_activity" >Details</th>
+						<th width="10%" class="school_activity">Receviable</th>
+						<th width="10%" class="school_activity">Payment</th>
+						<!-- <th width="10%" class="school_activity">Actions</th> -->
+					</tr>
+				</thead>
+				<tbody>
+					{% for board in board_report %}
+					<tr>
+						<td>{{board.date |date:'d-m-Y'}}</td>
+						<td style="text-align:left !important">{{board.expenses_details}}</td>
+						<td style="text-align:right !important">{{board.receviable}}</td>
+						<td style="text-align:right !important">{{board.payment}}</td>
+					</tr>
+					{% endfor %}
+					<tr>
+						<td></td>
+						<td style="text-align:left !important">Total</td>
+						<td style="text-align:right !important">{{total_recsum_detail}}</td>
+						<td style="text-align:right !important">{{total_paysum_detail}}</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td style="text-align:left !important">Balance</td>
+						<td></td>
+						<td style="text-align:right !important">{{diff_total_detail}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script>
+$(document).ready(function(){
+	$("#rec").click(function(){
+   		$("#pay").hide();
+   		$("#rec").attr('required', 'required')
+
+
+	});
+	$("#pay").click(function(){
+ 		$("#rec").hide();
+ 		$("#pay").attr('required', 'required')
+	});
+});
+</script>
+<script>
+function empty() {
+    var x;y;
+    x = document.getElementById("rec").value;
+    y = document.getElementById("pay").value;
+    if (x == "") {
+        alert("Enter a valid number");
+        return location.reload();
+    };
+    if (y == "") {
+        alert("Enter a valid number");
+        return location.reload();
+    };
+}
+</script>
+<!-- <script>
+function empty_pay() {
+    var x;
+    x = document.getElementById("pay").value;
+    if (x == "") {
+        alert("Enter a valid number");
+        return location.reload();
+    };
+}
+</script> -->
+{% endblock %}

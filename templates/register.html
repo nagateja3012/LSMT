@@ -1,0 +1,81 @@
+{% extends "header.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+  	<link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+  	<link rel="stylesheet" type="text/css" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<div class="container register">
+	<form action="/register/" method="POST">
+		{% csrf_token %}
+		<div class="">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<h4 style="font-weight: 700;">User Registration</h4>
+			</div>
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="row">
+					<div class="col-md-6 col-sm-6 col-xs-6 reg_mar">
+						<input type="text" name="first_name" class="reg_st" placeholder="Enter First Name (*)" required="">
+					</div>
+					<div class="col-md-6 col-sm-6 col-xs-6 reg_mar">
+						<input type="text" name="last_name" class="reg_st" placeholder="Enter Last Name (*)" required="">
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="row">
+					<div class="col-md-6 col-sm-6 col-xs-6 reg_mar">
+						<input type="email" name="email" class="reg_st" placeholder="Enter Email (*)" required="">
+					</div>
+					<div class="col-md-6 col-sm-6 col-xs-6 reg_mar">
+						<input type="password" name="password" class="reg_st" placeholder="Enter Password (*)" required="">
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="row">
+					<div class="col-md-6 col-sm-6 col-xs-6 reg_mar">
+						<input type="tel" name="mobile" class="reg_st" placeholder="Enter Mobile (*)" required="">
+					</div>
+					<div class="col-md-6 col-sm-6 col-xs-6 reg_mar">
+						<input type="test" name="country" class="reg_st" placeholder="Enter Country">
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="row">
+					<div class="col-md-6 col-sm-6 col-xs-6 reg_mar">
+						<input type="text" name="state" class="reg_st" placeholder="Enter State">
+					</div>
+					<div class="col-md-6 col-sm-6 col-xs-6 reg_mar">
+						<input type="text" name="city" class="reg_st" placeholder="Enter City">
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="row">
+					<div class="col-md-6 col-sm-6 col-xs-6 reg_mar">
+						<input type="text" name="postcode" class="reg_st" placeholder="Enter Postcode">
+					</div>
+					<div class="col-md-6 col-sm-6 col-xs-6 reg_mar">
+						<textarea name="address" style="width: 100%;" placeholder="Enter Address"></textarea>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12 col-sm-12 col-xs-12 reg_btn">
+				<button class="btn btn-success" type="submit">Save</button>
+			</div>
+		</div>
+	</form>
+</div>
+<style type="text/css">
+	.reg_st{
+		border: none;
+	    border-bottom: 1px solid #000;
+	    width: 100%;
+	}
+</style>
+{% endblock %}
+© 2020 GitHub, Inc.

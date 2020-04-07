@@ -1,0 +1,35 @@
+{% extends "header.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+{% load static %}
+
+<div class="container register">
+	<form action="/login/" method="POST">
+		{% csrf_token %}
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<h4 style="font-weight: 700;">User Login</h4>
+			</div>
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="row">
+					<div class="col-md-6 col-sm-6 col-xs-6 reg_mar">
+						<input type="text" name="username" class="reg_st" placeholder="Enter Email (*)" required="">
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="row">
+					<div class="col-md-6 col-sm-6 col-xs-6 reg_mar">
+						<input type="password" name="password" class="reg_st" placeholder="Enter Password (*)" required="">
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12 col-sm-12 col-xs-12 reg_btn" style="margin-bottom: 83px;">
+				<button class="btn btn-success" type="submit">Login</button>
+			</div>
+		</div>
+	</form>
+	<p>{{msg}}</p>
+</div>
+
+{% endblock %}
