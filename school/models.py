@@ -27,14 +27,4 @@ class Dashboard(models.Model):
 		return self.expenses_details
 
 
-class Profile(models.Model):
-    heads = models.CharField(choices=heads, max_length=50)
-    name = models.CharField(max_length=255)
-    email = models.EmailField(blank=True)
-    address = models.CharField(max_length=50)
-    phone = models.CharField(max_length=150,unique=True)
-    profile = models.TextField()
-    
-    def __str__(self):
-        return self.name
 
