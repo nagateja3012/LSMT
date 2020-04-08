@@ -60,6 +60,7 @@ def data_upload(request):
     return render(request, template, context)
     # return render(request,'data_upload.html',locals())
 
+
 def report(request):
     board = Dashboard.objects.all()
     if request.method=="POST":
