@@ -228,6 +228,9 @@ def logout_view(request):
 
 def dashboard(request):
     board = Dashboard.objects.all()
+    current_year = datetime.datetime.now().year
+    if request.method == "POST":
+        cur_year = request.POST['select_year'] 
     total_listrec = []
     total_recall = Dashboard.objects.all()
     for i in total_recall:
