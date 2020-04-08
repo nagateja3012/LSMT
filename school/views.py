@@ -65,139 +65,142 @@ def report(request):
     if request.method=="POST":
         value= request.POST['phone']
         total_listrec = []
-        total_listpay = []      
-        if value == "Telephone Bills":
-            board = Dashboard.objects.filter(heads = value)
-            total_recall = Dashboard.objects.filter(heads = value)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(heads = value)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum = sum(total_listpay)
-            diff_total = total_recsum - total_paysum
-            return render(request,'report_detail.html',locals())
-        elif  value == "Loans":     
-            board = Dashboard.objects.filter(heads = value)
-            total_recall = Dashboard.objects.filter(heads = value)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(heads = value)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum = sum(total_listpay)
-            diff_total = total_recsum - total_paysum
-            return render(request,'report_detail.html',locals())
-        elif  value == "Misllanious":     
-            board = Dashboard.objects.filter(heads = value)
-            total_recall = Dashboard.objects.filter(heads = value)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(heads = value)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum = sum(total_listpay)
-            diff_total = total_recsum - total_paysum
-            return render(request,'report_detail.html',locals())
-        elif  value == "Salary":     
-            board = Dashboard.objects.filter(heads = value)
-            total_recall = Dashboard.objects.filter(heads = value)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(heads = value)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum = sum(total_listpay)
-            diff_total = total_recsum - total_paysum
-            return render(request,'report_detail.html',locals())
-        elif  value == "Fee Collection":     
-            board = Dashboard.objects.filter(heads = value)
-            total_recall = Dashboard.objects.filter(heads = value)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(heads = value)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum = sum(total_listpay)
-            diff_total = total_recsum - total_paysum
-            return render(request,'report_detail.html',locals())
-        elif  value == "Current Bill":     
-            board = Dashboard.objects.filter(heads = value)
-            total_recall = Dashboard.objects.filter(heads = value)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(heads = value)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum = sum(total_listpay)
-            diff_total = total_recsum - total_paysum
-            return render(request,'report_detail.html',locals())
-        elif  value == "suspense":     
-            board = Dashboard.objects.filter(heads = value)
-            total_recall = Dashboard.objects.filter(heads = value)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(heads = value)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum = sum(total_listpay)
-            diff_total = total_recsum - total_paysum
-            return render(request,'report_detail.html',locals())
-        elif  value == "Rent":     
-            board = Dashboard.objects.filter(heads = value)
-            total_recall = Dashboard.objects.filter(heads = value)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(heads = value)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum = sum(total_listpay)
-            diff_total = total_recsum - total_paysum
-            return render(request,'report_detail.html',locals())
-        elif  value == "Transportation":     
-            board = Dashboard.objects.filter(heads = value)
-            total_recall = Dashboard.objects.filter(heads = value)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(heads = value)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum = sum(total_listpay)
-            diff_total = total_recsum - total_paysum
-            return render(request,'report_detail.html',locals())
-        elif  value == "Capitals":     
-            board = Dashboard.objects.filter(heads = value)
-            total_recall = Dashboard.objects.filter(heads = value)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(heads = value)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum = sum(total_listpay)
-            diff_total = total_recsum - total_paysum
-            return render(request,'report_detail.html',locals())
-        elif  value == "Advances":     
-            board = Dashboard.objects.filter(heads = value)
-            total_recall = Dashboard.objects.filter(heads = value)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(heads = value)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum = sum(total_listpay)
-            diff_total = total_recsum - total_paysum
-            return render(request,'report_detail.html',locals())
+        total_listpay = []
+        try:     
+            if value == "Telephone Bills":
+                board = Dashboard.objects.filter(heads = value)
+                total_recall = Dashboard.objects.filter(heads = value)
+                for i in total_recall:
+                    total_listrec.append(i.receviable)
+                    total_recsum = sum(total_listrec)
+                total_payall = Dashboard.objects.filter(heads = value)
+                for j in total_payall:
+                    total_listpay.append(j.payment)
+                    total_paysum = sum(total_listpay)
+                diff_total = total_recsum - total_paysum
+                return render(request,'report_detail.html',locals())
+            elif  value == "Loans":     
+                board = Dashboard.objects.filter(heads = value)
+                total_recall = Dashboard.objects.filter(heads = value)
+                for i in total_recall:
+                    total_listrec.append(i.receviable)
+                    total_recsum = sum(total_listrec)
+                total_payall = Dashboard.objects.filter(heads = value)
+                for j in total_payall:
+                    total_listpay.append(j.payment)
+                    total_paysum = sum(total_listpay)
+                diff_total = total_recsum - total_paysum
+                return render(request,'report_detail.html',locals())
+            elif  value == "Misllanious":     
+                board = Dashboard.objects.filter(heads = value)
+                total_recall = Dashboard.objects.filter(heads = value)
+                for i in total_recall:
+                    total_listrec.append(i.receviable)
+                    total_recsum = sum(total_listrec)
+                total_payall = Dashboard.objects.filter(heads = value)
+                for j in total_payall:
+                    total_listpay.append(j.payment)
+                    total_paysum = sum(total_listpay)
+                diff_total = total_recsum - total_paysum
+                return render(request,'report_detail.html',locals())
+            elif  value == "Salary":     
+                board = Dashboard.objects.filter(heads = value)
+                total_recall = Dashboard.objects.filter(heads = value)
+                for i in total_recall:
+                    total_listrec.append(i.receviable)
+                    total_recsum = sum(total_listrec)
+                total_payall = Dashboard.objects.filter(heads = value)
+                for j in total_payall:
+                    total_listpay.append(j.payment)
+                    total_paysum = sum(total_listpay)
+                diff_total = total_recsum - total_paysum
+                return render(request,'report_detail.html',locals())
+            elif  value == "Fee Collection":     
+                board = Dashboard.objects.filter(heads = value)
+                total_recall = Dashboard.objects.filter(heads = value)
+                for i in total_recall:
+                    total_listrec.append(i.receviable)
+                    total_recsum = sum(total_listrec)
+                total_payall = Dashboard.objects.filter(heads = value)
+                for j in total_payall:
+                    total_listpay.append(j.payment)
+                    total_paysum = sum(total_listpay)
+                diff_total = total_recsum - total_paysum
+                return render(request,'report_detail.html',locals())
+            elif  value == "Current Bill":     
+                board = Dashboard.objects.filter(heads = value)
+                total_recall = Dashboard.objects.filter(heads = value)
+                for i in total_recall:
+                    total_listrec.append(i.receviable)
+                    total_recsum = sum(total_listrec)
+                total_payall = Dashboard.objects.filter(heads = value)
+                for j in total_payall:
+                    total_listpay.append(j.payment)
+                    total_paysum = sum(total_listpay)
+                diff_total = total_recsum - total_paysum
+                return render(request,'report_detail.html',locals())
+            elif  value == "suspense":     
+                board = Dashboard.objects.filter(heads = value)
+                total_recall = Dashboard.objects.filter(heads = value)
+                for i in total_recall:
+                    total_listrec.append(i.receviable)
+                    total_recsum = sum(total_listrec)
+                total_payall = Dashboard.objects.filter(heads = value)
+                for j in total_payall:
+                    total_listpay.append(j.payment)
+                    total_paysum = sum(total_listpay)
+                diff_total = total_recsum - total_paysum
+                return render(request,'report_detail.html',locals())
+            elif  value == "Rent":     
+                board = Dashboard.objects.filter(heads = value)
+                total_recall = Dashboard.objects.filter(heads = value)
+                for i in total_recall:
+                    total_listrec.append(i.receviable)
+                    total_recsum = sum(total_listrec)
+                total_payall = Dashboard.objects.filter(heads = value)
+                for j in total_payall:
+                    total_listpay.append(j.payment)
+                    total_paysum = sum(total_listpay)
+                diff_total = total_recsum - total_paysum
+                return render(request,'report_detail.html',locals())
+            elif  value == "Transportation":     
+                board = Dashboard.objects.filter(heads = value)
+                total_recall = Dashboard.objects.filter(heads = value)
+                for i in total_recall:
+                    total_listrec.append(i.receviable)
+                    total_recsum = sum(total_listrec)
+                total_payall = Dashboard.objects.filter(heads = value)
+                for j in total_payall:
+                    total_listpay.append(j.payment)
+                    total_paysum = sum(total_listpay)
+                diff_total = total_recsum - total_paysum
+                return render(request,'report_detail.html',locals())
+            elif  value == "Capitals":     
+                board = Dashboard.objects.filter(heads = value)
+                total_recall = Dashboard.objects.filter(heads = value)
+                for i in total_recall:
+                    total_listrec.append(i.receviable)
+                    total_recsum = sum(total_listrec)
+                total_payall = Dashboard.objects.filter(heads = value)
+                for j in total_payall:
+                    total_listpay.append(j.payment)
+                    total_paysum = sum(total_listpay)
+                diff_total = total_recsum - total_paysum
+                return render(request,'report_detail.html',locals())
+            elif  value == "Advances":     
+                board = Dashboard.objects.filter(heads = value)
+                total_recall = Dashboard.objects.filter(heads = value)
+                for i in total_recall:
+                    total_listrec.append(i.receviable)
+                    total_recsum = sum(total_listrec)
+                total_payall = Dashboard.objects.filter(heads = value)
+                for j in total_payall:
+                    total_listpay.append(j.payment)
+                    total_paysum = sum(total_listpay)
+                diff_total = total_recsum - total_paysum
+                return render(request,'report_detail.html',locals())
+        except:
+            return HttpResponse("no values")
     return render(request,'reports.html',locals())
 
 
