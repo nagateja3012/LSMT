@@ -21,7 +21,7 @@
 		<div class="col-sm-6 col-md-6 col-xs-12">
 			<table>
 				<thead>
-					<tr>
+					<!-- <tr>
 						<form method="GET" action="/dashboard/">
 							<select style="border: 1px solid #000;" class="border_foot" name="select_month"  required="">
 	                            <option>-- Select --</option>
@@ -38,8 +38,38 @@
 	                        </select>
 	                        <button type="submit" value="submit">submit</button>
                        	</form>
-   						 <!-- <th colspan="4" class="title_dash" style="background-color: #5d50c6 !important;">January 2020</th> -->
-  					</tr>
+  					</tr> -->
+  					<tr>
+  						<form method="POST" action="/check-report/">
+  							{% csrf_token %}
+	                        <select name="select_month">
+	                            <option value="">--Select month--</option>
+	                            <option value="1">January </option>
+	                            <option value="2">February</option>
+	                            <option value="3">March </option>
+	                            <option value="4">April</option>
+	                            <option value="5">May</option>
+	                            <option value="6">June</opion>
+	                            <option value="7">July </option>
+	                            <option value="8">August </option>
+	                            <option value="9">September</option>
+	                            <option value="10">October </option>
+	                            <option value="11">November</option>
+	                            <option value="12">December</option>
+	                        </select>
+	                        <select name="select_year">
+	                            <option value="">--Select year--</option>
+	                            <option value="{{current_year}}">{{current_year}} </option>
+	                            <option value="{{current_year|sub:1}}">{{current_year|sub:1}} </option>
+	                            <option value="{{current_year|sub:2}}">{{current_year|sub:2}} </option>
+	                            <option value="{{current_year|sub:3}}">{{current_year|sub:3}}</option>
+	                            <option value="{{current_year|sub:4}}">{{current_year|sub:4}}</option>
+	                            <option value="{{current_year|sub:5}}">{{current_year|sub:5}}</option>
+	                        </select>
+	                        <button type="submit" value="submit">submit</button>
+	                    </form>
+                    </tr>
+                </div>
   				</thead>
 				<thead style="background-color: #69bc5f !important;">
 					<tr>
@@ -53,7 +83,7 @@
 				<tbody>
 					{% for board in board %}
 					<tr>
-						<td>{{board.date |date:'d-m-Y'}}</td>
+						<td>{{board.date |date:'Y-m-d'}}</td>
 						<td style="text-align:left !important">{{board.expenses_details}}</td>
 						<td style="text-align:right !important">{{board.receviable}}</td>
 						<td style="text-align:right !important">{{board.payment}}</td>

@@ -6,12 +6,13 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import login as auth_login
 from school.models import Dashboard
-from datetime import date
-import datetime
-from datetime import timedelta, time, date
+from django.utils import timezone
 import csv, io
 from django.shortcuts import render
 from django.contrib import messages 
+import dateparser
+import datetime
+from datetime import datetime,date, time, timedelta 
 
 # Create your views here.
 
@@ -33,13 +34,12 @@ def course(request):
 def teacher(request):
 	return render(request,'teacher.html',locals())
 
-
 def data_upload(request):
     template = "data_upload.html"
-    data = Dashboard.objects.all()
+    board_all = Dashboard.objects.all()
     prompt = {
             'order': 'Order of the CSV should be date, expenses_details, receviable,payment',
-            'profiles': data    
+            'Dashboard': board_all    
           }
     if request.method == "GET":
         return render(request, template, prompt)
@@ -50,11 +50,14 @@ def data_upload(request):
     io_string = io.StringIO(data_set)
     next(io_string)
     for column in csv.reader(io_string, delimiter=',', quotechar="|"):
+        x = datetime.strptime(column[0], "%m/%d/%Y")
         _, created = Dashboard.objects.update_or_create(
-            date=column[0],
+            date= dateparser.parse(column[0], "YYYY/MM/DD") ,
             expenses_details=column[1],
             receviable=column[2],
             payment=column[3],
+            date_month = x.month,
+            date_year = x.year,
         )
     context = {}
     return render(request, template, context)
@@ -220,17 +223,15 @@ def login(request):
 			msg = "Invalid Credentials"
 	return render(request,'login.html', locals())
 
-
 def logout_view(request):
 	logout(request)
 	return HttpResponseRedirect('/')
 
 
 def dashboard(request):
+    current_year = datetime.now().year
+    # current_month = datetime.now().month
     board = Dashboard.objects.all()
-    current_year = datetime.datetime.now().year
-    if request.method == "POST":
-        cur_year = request.POST['select_year'] 
     total_listrec = []
     total_recall = Dashboard.objects.all()
     for i in total_recall:
@@ -243,193 +244,228 @@ def dashboard(request):
         total_paysum = sum(total_listpay)
         diff_total = total_recsum - total_paysum
     if request.method == "POST":
+        x = datetime.strptime(request.POST["date"], "%Y-%m-%d")
         details_form = Dashboard.objects.create(
     		heads = request.POST["heads"],
     		date = request.POST["date"],
     		expenses_details = request.POST["expenses_details"],
     		receviable = request.POST["receviable"],
     		payment = request.POST["payment"],
+            date_month = x.month,
+            date_year = x.year,
     		)
         details_form.save()
-    if request.method=="GET":
+    # if request.method == "POST":
+    #     cur_year = request.POST['select_year']
+    #     cur_month = request.POST['select_month']
+    #     board_report = Dashboard.objects.filter(date_month=cur_month, date_year=cur_year)
+    #     return HttpResponseRedirect('/check-report/')
+    return render(request,'dashboard.html',locals())     
+        # board_report = Dashboard.objects.filter(date_month=cur_month, date_year=cur_year)
+        # return HttpResponse(board_report)
+        # # return render(request,'checkreport.html',{'board_report', board_report})
+    
+    # if request.method=="GET":
+    #     total_listrec = []
+    #     total_listpay = []
+    #     s_time = request.GET.get('select_month')
+    #     if s_time == 'today':
+    #         today = date.today()
+    #         board_report= Dashboard.objects.filter(date__gte=today).order_by('-date')
+    #         total_recall = Dashboard.objects.filter(date__gte=today)
+    #         for i in total_recall:
+    #             total_listrec.append(i.receviable)
+    #             total_recsum_detail = sum(total_listrec)
+    #         total_listpay = []
+    #         total_payall = Dashboard.objects.filter(date__gte=today)
+    #         for j in total_payall:
+    #             total_listpay.append(j.payment)
+    #             total_paysum_detail = sum(total_listpay)
+    #             diff_total_detail = total_recsum_detail - total_paysum_detail
+    #         return render(request,'dashboard_reportdaily.html',locals())
+    #     if s_time == 'yesterday':
+    #         today = datetime.datetime.now()
+    #         yesterday = datetime.datetime.now() - timedelta(days=1)
+    #         board_report= Dashboard.objects.filter(date__gte=yesterday).filter(date__lt=today).order_by('-date')
+    #         total_recall = Dashboard.objects.filter(date__gte=yesterday).filter(date__lt=today)
+    #         for i in total_recall:
+    #             total_listrec.append(i.receviable)
+    #             total_recsum_detail = sum(total_listrec)
+    #         total_payall = Dashboard.objects.filter(date__gte=yesterday).filter(date__lt=today)
+    #         for j in total_payall:
+    #             total_listpay.append(j.payment)
+    #             total_paysum_detail = sum(total_listpay)
+    #             diff_total_detail = total_recsum_detail - total_paysum_detail
+    #         return render(request,'dashboard_reportdaily.html',locals())
+    #     if s_time == 'this_week':
+    #         today = datetime.datetime.now()
+    #         start_of_week = today - timedelta(days=today.weekday())
+    #         end_of_week = start_of_week + timedelta(days=6)
+    #         board_report = Dashboard.objects.filter(date__gte=start_of_week).filter(date__lt=end_of_week).order_by('-date')
+    #         total_recall = Dashboard.objects.filter(date__gte=start_of_week).filter(date__lt=end_of_week)
+    #         for i in total_recall:
+    #             total_listrec.append(i.receviable)
+    #             total_recsum_detail = sum(total_listrec)
+    #         total_payall = Dashboard.objects.filter(date__gte=start_of_week).filter(date__lt=end_of_week)
+    #         for j in total_payall:
+    #             total_listpay.append(j.payment)
+    #             total_paysum_detail = sum(total_listpay)
+    #             diff_total_detail = total_recsum_detail - total_paysum_detail
+    #         return render(request,'dashboard_reportdaily.html',locals())
+    #     if s_time == 'last_week':
+    #         today = datetime.datetime.now()
+    #         yesterday = today - timedelta(days=today.weekday())
+    #         last_week = yesterday - timedelta(days=7)
+    #         board_report = Dashboard.objects.filter(date__gte=last_week).filter(date__lt=yesterday).order_by('-date')
+    #         total_recall = Dashboard.objects.filter(date__gte=last_week).filter(date__lt=yesterday)
+    #         for i in total_recall:
+    #             total_listrec.append(i.receviable)
+    #             total_recsum_detail = sum(total_listrec)
+    #         total_payall = Dashboard.objects.filter(date__gte=last_week).filter(date__lt=yesterday)
+    #         for j in total_payall:
+    #             total_listpay.append(j.payment)
+    #             total_paysum_detail = sum(total_listpay)
+    #             diff_total_detail = total_recsum_detail - total_paysum_detail
+    #         return render(request,'dashboard_reportdaily.html',locals())
+    #     if s_time == 'this_month':
+    #         today = datetime.datetime.now()
+    #         year = datetime.datetime.now().year
+    #         month =  datetime.datetime.now().month
+    #         yesterday = datetime.datetime.now() - timedelta(days=1)
+    #         last_week = datetime.datetime.now() - timedelta(days=7)
+    #         last_month = today.replace(day=29) - timedelta(days=29)
+    #         ninty = datetime.datetime.now() - timedelta(days=90)
+    #         onety = datetime.datetime.now() - timedelta(days=180)
+    #         last_year = datetime.datetime.now() - timedelta(days=365)
+    #         start_of_week = today - timedelta(days=today.weekday())
+    #         end_of_week = start_of_week + timedelta(days=6) 
+    #         first = today.replace(day=1) 
+    #         lastMonth = first - datetime.timedelta(days=1) 
+    #         second = lastMonth - timedelta(days=30)
+    #         lastquarter = ninty - timedelta(days=90)
+    #         lastyear = last_year - timedelta(days=365)
+    #         board_report = Dashboard.objects.filter(date__gte=last_month).filter(date__lt=today).order_by('-date')
+    #         total_recall = Dashboard.objects.filter(date__gte=last_month).filter(date__lt=today)
+    #         for i in total_recall:
+    #             total_listrec.append(i.receviable)
+    #             total_recsum_detail = sum(total_listrec)
+    #         total_payall = Dashboard.objects.filter(date__gte=last_month).filter(date__lt=today)
+    #         for j in total_payall:
+    #             total_listpay.append(j.payment)
+    #             total_paysum_detail = sum(total_listpay)
+    #             diff_total_detail = total_recsum_detail - total_paysum_detail
+    #         return render(request,'dashboard_reportdaily.html',locals())
+    #     if s_time == 'last_month':
+    #         today = datetime.datetime.now()
+    #         year = datetime.datetime.now().year
+    #         month =  datetime.datetime.now().month
+    #         yesterday = datetime.datetime.now() - timedelta(days=1)
+    #         last_week = datetime.datetime.now() - timedelta(days=7)
+    #         last_month = datetime.datetime.now() - timedelta(days=30)
+    #         ninty = datetime.datetime.now() - timedelta(days=90)
+    #         onety = datetime.datetime.now() - timedelta(days=180)
+    #         last_year = datetime.datetime.now() - timedelta(days=365)
+    #         start_of_week = today - timedelta(days=today.weekday())
+    #         end_of_week = start_of_week + timedelta(days=6) 
+    #         first = today.replace(day=1) 
+    #         lastMonth = first - datetime.timedelta(days=1) 
+    #         second = lastMonth - timedelta(days=30)
+    #         lastquarter = ninty - timedelta(days=90)
+    #         lastyear = last_year - timedelta(days=365)
+    #         board_report = Dashboard.objects.filter(date__gte=second).filter(date__lt=lastMonth).order_by('-date')
+    #         total_recall = Dashboard.objects.filter(date__gte=second).filter(date__lt=lastMonth)
+    #         for i in total_recall:
+    #             total_listrec.append(i.receviable)
+    #             total_recsum_detail = sum(total_listrec)
+    #         total_payall = Dashboard.objects.filter(date__gte=second).filter(date__lt=lastMonth)
+    #         for j in total_payall:
+    #             total_listpay.append(j.payment)
+    #             total_paysum_detail = sum(total_listpay)
+    #             diff_total_detail = total_recsum_detail - total_paysum_detail
+    #         return render(request,'dashboard_reportdaily.html',locals())
+    #     if s_time == 'this_quarter':
+    #         today = datetime.datetime.now()
+    #         ninty = today.replace(day=1)  - timedelta(days=60)
+    #         board_report = Dashboard.objects.filter(date__gte=ninty).filter(date__lt=today).order_by('-date')
+    #         total_recall = Dashboard.objects.filter(date__gte=ninty).filter(date__lt=today)
+    #         for i in total_recall:
+    #             total_listrec.append(i.receviable)
+    #             total_recsum_detail = sum(total_listrec)
+    #         total_payall = Dashboard.objects.filter(date__gte=ninty).filter(date__lt=today)
+    #         for j in total_payall:
+    #             total_listpay.append(j.payment)
+    #             total_paysum_detail = sum(total_listpay)
+    #             diff_total_detail = total_recsum_detail - total_paysum_detail
+    #         return render(request,'dashboard_reportdaily.html',locals())
+    #     if s_time == 'last_quarter':
+    #         today = datetime.datetime.now()
+    #         ninty = today.replace(day=1)  - timedelta(days=60)
+    #         lastquarter = ninty - timedelta(days=90)
+    #         board_report = Dashboard.objects.filter(date__gte=lastquarter).filter(date__lt=ninty).order_by('-date')
+    #         total_recall = Dashboard.objects.filter(date__gte=lastquarter).filter(date__lt=ninty)
+    #         for i in total_recall:
+    #             total_listrec.append(i.receviable)
+    #             total_recsum_detail = sum(total_listrec)
+    #         total_payall = Dashboard.objects.filter(date__gte=lastquarter).filter(date__lt=ninty)
+    #         for j in total_payall:
+    #             total_listpay.append(j.payment)
+    #             total_paysum_detail = sum(total_listpay)
+    #             diff_total_detail = total_recsum_detail - total_paysum_detail
+    #         return render(request,'dashboard_reportdaily.html',locals())
+    #     if s_time == 'this_year':
+    #         today = datetime.datetime.now()
+    #         la = today.replace(day=30,month=6)
+    #         ly = la - timedelta(days=365)
+    #         th_yr = ly + timedelta(days=396)
+    #         board_report = Dashboard.objects.filter(date__gte=ly).filter(date__lt=th_yr).order_by('-date')
+    #         total_recall = Dashboard.objects.filter(date__gte=ly).filter(date__lt=th_yr)
+    #         for i in total_recall:
+    #             total_listrec.append(i.receviable)
+    #             total_recsum_detail = sum(total_listrec)
+    #         total_payall = Dashboard.objects.filter(date__gte=ly).filter(date__lt=th_yr)
+    #         for j in total_payall:
+    #             total_listpay.append(j.payment)
+    #             total_paysum_detail = sum(total_listpay)
+    #             diff_total_detail = total_recsum_detail - total_paysum_detail
+    #         return render(request,'dashboard_reportdaily.html',locals())
+    #     if s_time == 'last_year':
+    #         today = datetime.datetime.now()
+    #         ty = today.replace(day=31,month=7) - timedelta(days=366)
+    #         lastyear = ty - timedelta(days=396)
+    #         board_report = Dashboard.objects.filter(date__gte=lastyear).filter(date__lt=ty).order_by('-date')
+    #         total_recall = Dashboard.objects.filter(date__gte=lastyear).filter(date__lt=ty)
+    #         for i in total_recall:
+    #             total_listrec.append(i.receviable)
+    #             total_recsum_detail = sum(total_listrec)
+    #         total_payall = Dashboard.objects.filter(date__gte=lastyear).filter(date__lt=ty)
+    #         for j in total_payall:
+    #             total_listpay.append(j.payment)
+    #             total_paysum_detail = sum(total_listpay)
+    #             diff_total_detail = total_recsum_detail - total_paysum_detail
+    #         return render(request,'dashboard_reportdaily.html',locals())
+    # return render(request,'dashboard.html',locals())
+
+
+def check_report(request):
+    current_year = datetime.now().year
+    # current_month = datetime.now().month
+    if request.method == "POST":
+        cur_year = request.POST['select_year']
+        cur_month = request.POST['select_month']
+        board_report = Dashboard.objects.filter(date_month=cur_month, date_year=cur_year)
         total_listrec = []
+        total_recall = Dashboard.objects.filter(date_month=cur_month, date_year=cur_year)
+        for i in total_recall:
+            total_listrec.append(i.receviable)
+            total_recsum_detail = sum(total_listrec)
         total_listpay = []
-        s_time = request.GET.get('select_month')
-        if s_time == 'today':
-            today = date.today()
-            board_report= Dashboard.objects.filter(date__gte=today).order_by('-date')
-            total_recall = Dashboard.objects.filter(date__gte=today)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum_detail = sum(total_listrec)
-            total_listpay = []
-            total_payall = Dashboard.objects.filter(date__gte=today)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum_detail = sum(total_listpay)
-                diff_total_detail = total_recsum_detail - total_paysum_detail
-            return render(request,'dashboard_reportdaily.html',locals())
-        if s_time == 'yesterday':
-            today = datetime.datetime.now()
-            yesterday = datetime.datetime.now() - timedelta(days=1)
-            board_report= Dashboard.objects.filter(date__gte=yesterday).filter(date__lt=today).order_by('-date')
-            total_recall = Dashboard.objects.filter(date__gte=yesterday).filter(date__lt=today)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum_detail = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(date__gte=yesterday).filter(date__lt=today)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum_detail = sum(total_listpay)
-                diff_total_detail = total_recsum_detail - total_paysum_detail
-            return render(request,'dashboard_reportdaily.html',locals())
-        if s_time == 'this_week':
-            today = datetime.datetime.now()
-            start_of_week = today - timedelta(days=today.weekday())
-            end_of_week = start_of_week + timedelta(days=6)
-            board_report = Dashboard.objects.filter(date__gte=start_of_week).filter(date__lt=end_of_week).order_by('-date')
-            total_recall = Dashboard.objects.filter(date__gte=start_of_week).filter(date__lt=end_of_week)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum_detail = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(date__gte=start_of_week).filter(date__lt=end_of_week)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum_detail = sum(total_listpay)
-                diff_total_detail = total_recsum_detail - total_paysum_detail
-            return render(request,'dashboard_reportdaily.html',locals())
-        if s_time == 'last_week':
-            today = datetime.datetime.now()
-            yesterday = today - timedelta(days=today.weekday())
-            last_week = yesterday - timedelta(days=7)
-            board_report = Dashboard.objects.filter(date__gte=last_week).filter(date__lt=yesterday).order_by('-date')
-            total_recall = Dashboard.objects.filter(date__gte=last_week).filter(date__lt=yesterday)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum_detail = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(date__gte=last_week).filter(date__lt=yesterday)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum_detail = sum(total_listpay)
-                diff_total_detail = total_recsum_detail - total_paysum_detail
-            return render(request,'dashboard_reportdaily.html',locals())
-        if s_time == 'this_month':
-            today = datetime.datetime.now()
-            year = datetime.datetime.now().year
-            month =  datetime.datetime.now().month
-            yesterday = datetime.datetime.now() - timedelta(days=1)
-            last_week = datetime.datetime.now() - timedelta(days=7)
-            last_month = today.replace(day=29) - timedelta(days=29)
-            ninty = datetime.datetime.now() - timedelta(days=90)
-            onety = datetime.datetime.now() - timedelta(days=180)
-            last_year = datetime.datetime.now() - timedelta(days=365)
-            start_of_week = today - timedelta(days=today.weekday())
-            end_of_week = start_of_week + timedelta(days=6) 
-            first = today.replace(day=1) 
-            lastMonth = first - datetime.timedelta(days=1) 
-            second = lastMonth - timedelta(days=30)
-            lastquarter = ninty - timedelta(days=90)
-            lastyear = last_year - timedelta(days=365)
-            board_report = Dashboard.objects.filter(date__gte=last_month).filter(date__lt=today).order_by('-date')
-            total_recall = Dashboard.objects.filter(date__gte=last_month).filter(date__lt=today)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum_detail = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(date__gte=last_month).filter(date__lt=today)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum_detail = sum(total_listpay)
-                diff_total_detail = total_recsum_detail - total_paysum_detail
-            return render(request,'dashboard_reportdaily.html',locals())
-        if s_time == 'last_month':
-            today = datetime.datetime.now()
-            year = datetime.datetime.now().year
-            month =  datetime.datetime.now().month
-            yesterday = datetime.datetime.now() - timedelta(days=1)
-            last_week = datetime.datetime.now() - timedelta(days=7)
-            last_month = datetime.datetime.now() - timedelta(days=30)
-            ninty = datetime.datetime.now() - timedelta(days=90)
-            onety = datetime.datetime.now() - timedelta(days=180)
-            last_year = datetime.datetime.now() - timedelta(days=365)
-            start_of_week = today - timedelta(days=today.weekday())
-            end_of_week = start_of_week + timedelta(days=6) 
-            first = today.replace(day=1) 
-            lastMonth = first - datetime.timedelta(days=1) 
-            second = lastMonth - timedelta(days=30)
-            lastquarter = ninty - timedelta(days=90)
-            lastyear = last_year - timedelta(days=365)
-            board_report = Dashboard.objects.filter(date__gte=second).filter(date__lt=lastMonth).order_by('-date')
-            total_recall = Dashboard.objects.filter(date__gte=second).filter(date__lt=lastMonth)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum_detail = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(date__gte=second).filter(date__lt=lastMonth)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum_detail = sum(total_listpay)
-                diff_total_detail = total_recsum_detail - total_paysum_detail
-            return render(request,'dashboard_reportdaily.html',locals())
-        if s_time == 'this_quarter':
-            today = datetime.datetime.now()
-            ninty = today.replace(day=1)  - timedelta(days=60)
-            board_report = Dashboard.objects.filter(date__gte=ninty).filter(date__lt=today).order_by('-date')
-            total_recall = Dashboard.objects.filter(date__gte=ninty).filter(date__lt=today)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum_detail = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(date__gte=ninty).filter(date__lt=today)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum_detail = sum(total_listpay)
-                diff_total_detail = total_recsum_detail - total_paysum_detail
-            return render(request,'dashboard_reportdaily.html',locals())
-        if s_time == 'last_quarter':
-            today = datetime.datetime.now()
-            ninty = today.replace(day=1)  - timedelta(days=60)
-            lastquarter = ninty - timedelta(days=90)
-            board_report = Dashboard.objects.filter(date__gte=lastquarter).filter(date__lt=ninty).order_by('-date')
-            total_recall = Dashboard.objects.filter(date__gte=lastquarter).filter(date__lt=ninty)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum_detail = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(date__gte=lastquarter).filter(date__lt=ninty)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum_detail = sum(total_listpay)
-                diff_total_detail = total_recsum_detail - total_paysum_detail
-            return render(request,'dashboard_reportdaily.html',locals())
-        if s_time == 'this_year':
-            today = datetime.datetime.now()
-            la = today.replace(day=30,month=6)
-            ly = la - timedelta(days=365)
-            th_yr = ly + timedelta(days=396)
-            board_report = Dashboard.objects.filter(date__gte=ly).filter(date__lt=th_yr).order_by('-date')
-            total_recall = Dashboard.objects.filter(date__gte=ly).filter(date__lt=th_yr)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum_detail = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(date__gte=ly).filter(date__lt=th_yr)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum_detail = sum(total_listpay)
-                diff_total_detail = total_recsum_detail - total_paysum_detail
-            return render(request,'dashboard_reportdaily.html',locals())
-        if s_time == 'last_year':
-            today = datetime.datetime.now()
-            ty = today.replace(day=31,month=7) - timedelta(days=366)
-            lastyear = ty - timedelta(days=396)
-            board_report = Dashboard.objects.filter(date__gte=lastyear).filter(date__lt=ty).order_by('-date')
-            total_recall = Dashboard.objects.filter(date__gte=lastyear).filter(date__lt=ty)
-            for i in total_recall:
-                total_listrec.append(i.receviable)
-                total_recsum_detail = sum(total_listrec)
-            total_payall = Dashboard.objects.filter(date__gte=lastyear).filter(date__lt=ty)
-            for j in total_payall:
-                total_listpay.append(j.payment)
-                total_paysum_detail = sum(total_listpay)
-                diff_total_detail = total_recsum_detail - total_paysum_detail
-            return render(request,'dashboard_reportdaily.html',locals())
-    return render(request,'dashboard.html',locals())
+        total_payall = Dashboard.objects.filter(date_month=cur_month, date_year=cur_year)
+        for j in total_payall:
+            total_listpay.append(j.payment)
+            total_paysum_detail = sum(total_listpay)
+            diff_total_detail = total_recsum_detail - total_paysum_detail
+    return render(request,'checkreport.html',locals())
+
 
 def dashboard_report(request):
     if request.method=="GET":

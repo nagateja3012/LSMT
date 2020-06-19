@@ -22,7 +22,7 @@
 			<table>
 				<thead>
 					<tr>
-						<form method="GET" action="/dashboard-report/">
+						<form method="POST" action="/dashboard-report/">
 							<select style="border: 1px solid #000;" class="border_foot" name="select_month"  required="">
 	                            <option>-- Select --</option>
 	                            <option value="today">Today</option>
@@ -76,43 +76,4 @@
 		</div>
 	</div>
 </div>
-<script>
-$(document).ready(function(){
-	$("#rec").click(function(){
-   		$("#pay").hide();
-   		$("#rec").attr('required', 'required')
-
-
-	});
-	$("#pay").click(function(){
- 		$("#rec").hide();
- 		$("#pay").attr('required', 'required')
-	});
-});
-</script>
-<script>
-function empty() {
-    var x;y;
-    x = document.getElementById("rec").value;
-    y = document.getElementById("pay").value;
-    if (x == "") {
-        alert("Enter a valid number");
-        return location.reload();
-    };
-    if (y == "") {
-        alert("Enter a valid number");
-        return location.reload();
-    };
-}
-</script>
-<!-- <script>
-function empty_pay() {
-    var x;
-    x = document.getElementById("pay").value;
-    if (x == "") {
-        alert("Enter a valid number");
-        return location.reload();
-    };
-}
-</script> -->
 {% endblock %}

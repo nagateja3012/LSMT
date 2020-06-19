@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib import admin
 from django.contrib.auth.models import User
+from datetime import date
 # Create your models here.
 
 heads = (
@@ -17,14 +18,16 @@ heads = (
 )
 
 class Dashboard(models.Model):
-	heads = models.CharField(choices=heads,max_length=255)
-	date = models.DateField(null=True,blank=True)
-	expenses_details = models.CharField(max_length=255)
-	receviable = models.FloatField(default=0.0)
-	payment = models.FloatField(default=0.0)
+    heads = models.CharField(choices=heads,max_length=255)
+    date = models.DateField(null=True,blank=True)
+    expenses_details = models.CharField(max_length=255)
+    receviable = models.FloatField(default=0.0)
+    payment = models.FloatField(default=0.0)
+    date_year = models.IntegerField(default=0)
+    date_month = models.CharField(max_length=20, null=True, blank=True)
 
-	def __str__(self):
-		return self.expenses_details
+    def __str__(self):
+        return self.expenses_details
 
 
 
