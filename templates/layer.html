@@ -1,0 +1,17 @@
+{% extends "header.html" %}
+{% block title %}Kidzee School Guntur{% endblock %}
+{% block description %}{% endblock %}
+{% block keyword %}{% endblock %}
+{% load static %}
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12 col-md-12 col-xs-12">
+			{% for board in board %}
+			<a href="/layer/">{{board.expenses_details}}</a><br>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+{% endblock %}

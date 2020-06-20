@@ -19,6 +19,8 @@ urlpatterns=[
 	url(r'^dashboard-report/$',views.dashboard_report, name='dashboard_report'),
 	url(r'^data-upload/$',views.data_upload, name='data_upload'),
 	url(r'^check-report/$',views.check_report, name='data_upload'),
+	url(r'^layer/$',views.layer, name='layer'),
+	url(r'^layer-detail/(?P<id>[0-9]+)/$',views.layerdetail, name='layerdetail'),
 ]
 
 

@@ -1,0 +1,49 @@
+{% extends "header.html" %}
+{% block title %}Kidzee School Guntur{% endblock %}
+{% block description %}{% endblock %}
+{% block keyword %}{% endblock %}
+{% load static %}
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12 col-md-12 col-xs-12">
+			<table>
+				<thead>
+					<tr>
+   						 <th colspan="4" class="title_dash" style="text-transform: capitalize;background-color: #5d50c6 !important;">{{board.expenses_details}}</th>
+  					</tr>
+  				</thead>
+				<thead style="background-color: #69bc5f !important;">
+					<tr>
+						<th width="12%" class="school_activity">Date</th>
+						<th width="30%" class="school_activity">Heads</th>
+						<th width="10%" class="school_activity">Receviable</th>
+						<th width="10%" class="school_activity">Payment</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>{{board.date}}</td>
+						<td style="text-align:center !important">{{board.heads}}</td>
+						<td style="text-align:right !important">{{board.receviable}}</td>
+						<td style="text-align:right !important">{{board.payment}}</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td style="text-align:right !important">{{total_recsum}}</td>
+						<td style="text-align:right !important">{{total_paysum}}</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td style="text-align:right !important">Total</td>
+						<td style="text-align:right !important">{{diff_total}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

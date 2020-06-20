@@ -34,6 +34,17 @@ def course(request):
 def teacher(request):
 	return render(request,'teacher.html',locals())
 
+
+def layer(request):
+    board = Dashboard.objects.all()
+    return render(request,'layer.html',locals())
+    
+
+def layerdetail(request,id):
+    board = Dashboard.objects.get(id=id)
+    return render(request,'layer_detail.html',locals())
+
+
 def data_upload(request):
     template = "data_upload.html"
     board_all = Dashboard.objects.all()
