@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'kidzee.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'anil_kidzee',
+        'NAME': 'milkls',
         'USER' : 'root',
         'PASSWORD' : '',
         'HOST' : 'localhost',

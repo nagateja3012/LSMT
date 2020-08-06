@@ -5,6 +5,8 @@ from django.conf import settings
 app_name = 'school'
 
 urlpatterns=[
+	# url(r'^fileupload/$',views.model_form_upload, name='model_form_upload'),
+	url(r'^pdf-download/$',views.pdf_download, name='pdf_download'),
 	url(r'^$',views.home, name='home'),
 	url(r'^about/$',views.about, name='about'),
 	url(r'^contact/$',views.contact, name='contact'),
@@ -18,6 +20,7 @@ urlpatterns=[
 	url(r'^dashboard/$',views.dashboard, name='dashboard'),
 	url(r'^dashboard-report/$',views.dashboard_report, name='dashboard_report'),
 	url(r'^data-upload/$',views.data_upload, name='data_upload'),
+	url(r'^hdfc-upload/$',views.hdfc_upload, name='hdfc_upload'),
 	url(r'^check-report/$',views.check_report, name='data_upload'),
 	url(r'^layer/$',views.layer, name='layer'),
 	url(r'^layer-detail/(?P<id>[0-9]+)/$',views.layerdetail, name='layerdetail'),

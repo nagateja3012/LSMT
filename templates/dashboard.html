@@ -16,29 +16,13 @@
         }); 
     }) 
 </script>  
+<button type="button"><a href="/pdf-download/">Download</a></button>
+
 <div class="container">
 	<div class="row">
 		<div class="col-sm-6 col-md-6 col-xs-12">
 			<table>
 				<thead>
-					<!-- <tr>
-						<form method="GET" action="/dashboard/">
-							<select style="border: 1px solid #000;" class="border_foot" name="select_month"  required="">
-	                            <option>-- Select --</option>
-	                            <option value="today">Today</option>
-		                        <option value="yesterday">Yesterday</option>
-		                        <option value="this_week">This Week</option>
-		                        <option value="last_week">Last Week</option>
-		                        <option value="this_month">This Month</option>
-		                        <option value="last_month">Last Month</option>
-		                        <option value="this_quarter">This Quarter</option>
-		                        <option value="last_quarter">Last Quarter</option>
-		                        <option value="this_year">This Year</option>
-		                        <option value="last_year">Last Year</option>
-	                        </select>
-	                        <button type="submit" value="submit">submit</button>
-                       	</form>
-  					</tr> -->
   					<tr>
   						<form method="POST" action="/check-report/">
   							{% csrf_token %}

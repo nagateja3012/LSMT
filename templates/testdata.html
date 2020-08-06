@@ -1,0 +1,16 @@
+{% extends "header.html" %}
+{% block title %}Kidzee School Guntur{% endblock %}
+{% block description %}{% endblock %}
+{% block keyword %}{% endblock %}
+{% load static %}
+{% block content %}
+<form action="/fileupload/" method="POST" enctype="multipart/form-data">
+	{% csrf_token %}
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<div class="row">
+			{{form.document}}
+			<button class="btn btn-success" type="submit">Save</button>
+	  	</div>
+	</div>
+</form>
+{% endblock %}
