@@ -4,17 +4,6 @@
 {% block keyword %}{% endblock %}
 {% load static %}
 {% block content %}
-    <!-- <section class="hero-wrap hero-wrap-2" style="background-image: url('images/bg_2.jpg');">
-      <div class="overlay"></div>
-      <div class="container">
-        <div class="row no-gutters slider-text align-items-center justify-content-center">
-          <div class="col-md-9 ftco-animate text-center">
-            <h1 class="mb-2 bread">Pricing</h1>
-            <p class="breadcrumbs"><span class="mr-2"><a href="index.html">Home <i class="ion-ios-arrow-forward"></i></a></span> <span>Pricing <i class="ion-ios-arrow-forward"></i></span></p>
-          </div>
-        </div>
-      </div>
-    </section> -->
     <form action="/report/" method="POST">
         {% csrf_token %}
         <div class="col-md-12 col-sm-12 col-xs-12">
@@ -30,11 +19,11 @@
                 <button type="submit" class="Submit_form" name="phone" value="Transportation">Transport</button>
                 <button type="submit" class="Submit_form" name="phone" value="Capitals">Capital</button>
                 <button type="submit" class="Submit_form" name="phone" value="Advances">Advance</button>
-                <button type="submit" class="Submit_form" name="" value=""><a href="/layer/">Layer</a></button>
+                <button type="submit" class="Submit_form" name="" value=""><a href="/ledger/">Ledger</a></button>
             </div>
         </div>
 	</form>	
-		<section class="ftco-section">
+	<!-- <section class="ftco-section">
     	<div class="container">
     		<div class="row">
         	<div class="col-md-6 col-lg-3 ftco-animate">
@@ -91,5 +80,5 @@
         	</div>
         </div>
     	</div>
-    </section>
+    </section> -->
 {% endblock %}

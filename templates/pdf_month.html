@@ -1,31 +1,7 @@
-{% extends "header.html" %}
-{% block title %}Kidzee School Guntur{% endblock %}
-{% block description %}{% endblock %}
-{% block keyword %}{% endblock %}
-{% load static %}
-{% block content %}
-<link href= 
-'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css' rel='stylesheet'> 
-<script src= "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"> </script> 
-<script src= "https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"> </script>
-<script> 
-    $(document).ready(function() { 
-        $(function() { 
-            $( "#my_date_picker" ).datepicker(); 
-        }); 
-    }) 
-</script> 
 <div class="container">
 	<div class="row">
 		<div class="col-sm-12 col-md-12 col-xs-12">
-			<button type="button"><a href="/pdf/{{board.0.expenses_details}}" target="_blank">Download</a></button><br>
-
-			<form method="POST" action="" target="_blank">
-				{% csrf_token %}
-				<input class="border_foot" type="date" id="my_date_picker" name="start_date" placeholder="Enter MM/DD/YYYY" required="">
-				<input class="border_foot" type="date" id="my_date_picker" name="end_date" placeholder="Enter MM/DD/YYYY" required="">
-				<button type="submit" value="submit">Submit</button>
-			</form>
+			<button type="button"><a href="/{{slug}}/{{slug1}}/{{slug2}}/" target="_blank">Download</a></button><br>
 			<table>
 				<thead>
 					<tr>
@@ -66,5 +42,3 @@
 		</div>
 	</div>
 </div>
-
-{% endblock %}

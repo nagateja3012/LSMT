@@ -17,9 +17,11 @@ from django.conf.urls import url,include
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
+from school.views import GeneratePdf, GeneratePdf_date
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    # url(r'^tinymce/', include('tinymce.urls')),
+    url(r'^pdf/(?P<slug>.*)/$', GeneratePdf.as_view()),
+    url(r'^down/(?P<slug>.*)/(?P<slug1>.*)/(?P<slug2>.*)/$', GeneratePdf_date.as_view()),
     url(r'^', include("school.urls",namespace="school")),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

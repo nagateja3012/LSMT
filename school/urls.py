@@ -6,7 +6,8 @@ app_name = 'school'
 
 urlpatterns=[
 	# url(r'^fileupload/$',views.model_form_upload, name='model_form_upload'),
-	url(r'^pdf-download/$',views.pdf_download, name='pdf_download'),
+	# url(r'^pdf-download/$',views.pdf_download, name='pdf_download'),
+	url(r'^down/(?P<slug>.*)/(?P<slug1>.*)/(?P<slug2>.*)/$',views.pdf_month, name='pdf_month'),
 	url(r'^$',views.home, name='home'),
 	url(r'^about/$',views.about, name='about'),
 	url(r'^contact/$',views.contact, name='contact'),
@@ -22,8 +23,10 @@ urlpatterns=[
 	url(r'^data-upload/$',views.data_upload, name='data_upload'),
 	url(r'^hdfc-upload/$',views.hdfc_upload, name='hdfc_upload'),
 	url(r'^check-report/$',views.check_report, name='data_upload'),
-	url(r'^layer/$',views.layer, name='layer'),
-	url(r'^layer-detail/(?P<id>[0-9]+)/$',views.layerdetail, name='layerdetail'),
+	url(r'^ledger/$',views.layer, name='layer'),
+	# url(r'^pdf/(?P<slug>.*)$',views.pdf_month, name='pdf_month'),
+	url(r'^layer-detail/(?P<slug>.*)/$',views.layerdetail, name='layerdetail'),
+	
 ]
 
 

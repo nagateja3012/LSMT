@@ -16,8 +16,6 @@
         }); 
     }) 
 </script>  
-<button type="button"><a href="/pdf-download/">Download</a></button>
-
 <div class="container">
 	<div class="row">
 		<div class="col-sm-6 col-md-6 col-xs-12">
@@ -69,8 +67,16 @@
 					<tr>
 						<td>{{board.date |date:'Y-m-d'}}</td>
 						<td style="text-align:left !important">{{board.expenses_details}}</td>
+						{% if board.receviable == 0.0 %}
+							<td style="text-align:right !important"></td>
+						{% else %}
 						<td style="text-align:right !important">{{board.receviable}}</td>
+						{% endif %}
+						{% if board.payment == 0.0 %}
+							<td style="text-align:right !important"></td>
+						{% else %}
 						<td style="text-align:right !important">{{board.payment}}</td>
+						{% endif %}
 					</tr>
 					{% endfor %}
 					<tr>
@@ -163,14 +169,4 @@ function empty() {
     };
 }
 </script>
-<!-- <script>
-function empty_pay() {
-    var x;
-    x = document.getElementById("pay").value;
-    if (x == "") {
-        alert("Enter a valid number");
-        return location.reload();
-    };
-}
-</script> -->
 {% endblock %}

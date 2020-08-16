@@ -7,8 +7,11 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-12 col-md-12 col-xs-12">
+			<!-- {% for hdfc in hdfc %}
+			<a href="/layer-detail/{{hdfc.id}}" value="phone">{{hdfc.Narration}}</a><br>
+			{% endfor %} -->
 			{% for board in board %}
-			<a href="/layer-detail/{{board.id}}" value="phone">{{board.expenses_details}}</a><br>
+			<a href="/layer-detail/{{board.expenses_details}}" value="phone">{{board.expenses_details}}</a><br>
 			{% endfor %}
 		</div>
 	</div>
