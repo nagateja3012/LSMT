@@ -19,7 +19,12 @@ from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.views.generic import View
 from django.template.loader import get_template
-from kidzee.utils import render_to_pdf 
+from kidzee.utils import render_to_pdf
+from dateutil.relativedelta import relativedelta 
+import sys
+import xlwt
+from importlib import reload
+reload(sys)
 
 # Create your views here.
 
@@ -37,10 +42,47 @@ from kidzee.utils import render_to_pdf
 class GeneratePdf(View):
     def get(self, request,slug, *args, **kwargs):
         template = get_template('pdf_download.html')
-        board = Dashboard.objects.filter(expenses_details=slug)
+        today = date.today()
+        start_of_yr = today.replace(day =1, month=4)
+        end_of_yr = start_of_yr + relativedelta(months=11,days=31) - timedelta(days=1)
+        board = Dashboard.objects.filter(expenses_details=slug, date__gte=start_of_yr, date__lte=end_of_yr)
         b = Dashboard.objects.values('expenses_details').distinct()
+        total_listrec = []
+        total_listpay = []
+        total_recall = Dashboard.objects.filter(expenses_details=slug, date__gte=start_of_yr, date__lte=end_of_yr)
+        for i in total_recall:
+            total_listrec.append(i.receviable)
+            total_recsum = sum(total_listrec)
+            total_r = sum(total_listrec)
+        total_payall = Dashboard.objects.filter(expenses_details=slug, date__gte=start_of_yr, date__lte=end_of_yr)
+        for j in total_payall:
+            total_listpay.append(j.payment)
+            total_paysum = sum(total_listpay)
+            total_p = sum(total_listpay)
+            # diff_total = total_recsum - total_paysum
+        if total_recsum >  total_paysum:
+            tr = total_recsum - total_paysum
+            total_paysum = total_paysum + tr
+            # return HttpResponse("tr {{tr}}")
+            tp = 0.0
+            total_sum = total_paysum
+
+        elif total_paysum > total_recsum:
+            tp = total_paysum - total_recsum
+            total_recsum = total_recsum + tp
+            tr = 0.0
+            total_sum = total_recsum
         context = {
-             'board': board
+             'board': board,
+             'total_sum': total_sum,
+             'total_recsum': total_recsum,
+             'total_paysum':total_paysum,
+             'total_r':total_r,
+             'total_p':total_p,
+             'tp': tp,
+             'tr': tr,
+             'start_of_yr': start_of_yr,
+             'end_of_yr':end_of_yr
         }
         html = template.render(context)
         pdf = render_to_pdf("pdf_download.html",context)
@@ -57,14 +99,49 @@ class GeneratePdf(View):
 
 class GeneratePdf_date(View):
     def get(self, request,slug, slug1, slug2, *args, **kwargs):
-        template = get_template('pdf_download.html')
+        template = get_template('pdf_download_date.html')
         board = Dashboard.objects.filter(expenses_details=slug, date__gte=slug1, date__lte=slug2)
         # return HttpResponse(board)
+        total_listrec = []
+        total_listpay = []
+        total_recall = Dashboard.objects.filter(expenses_details=slug, date__gte=slug1, date__lte=slug2)
+        for i in total_recall:
+            total_listrec.append(i.receviable)
+            total_recsum = sum(total_listrec)
+            total_r = sum(total_listrec)
+        total_payall = Dashboard.objects.filter(expenses_details=slug, date__gte=slug1, date__lte=slug2)
+        for j in total_payall:
+            total_listpay.append(j.payment)
+            total_paysum = sum(total_listpay)
+            total_p = sum(total_listpay)
+            # diff_total = total_recsum - total_paysum
+        if total_recsum >  total_paysum:
+            tr = total_recsum - total_paysum
+            total_paysum = total_paysum + tr
+            # return HttpResponse("tr {{tr}}")
+            tp = 0.0
+            total_sum = total_paysum
+
+        elif total_paysum > total_recsum:
+            tp = total_paysum - total_recsum
+            total_recsum = total_recsum + tp
+            tr = 0.0
+            total_sum = total_recsum
         context = {
-             'board': board
+            'board': board,
+            'slug1':slug1,
+            'slug2':slug2,
+            'total_sum': total_sum,
+            'total_recsum': total_recsum,
+             'total_paysum':total_paysum,
+             'total_r':total_r,
+             'total_p':total_p,
+             'tp': tp,
+             'tr': tr,
+
         }
         html = template.render(context)
-        pdf = render_to_pdf("pdf_download.html",context)
+        pdf = render_to_pdf("pdf_download_date.html",context)
         if pdf:
             response = HttpResponse(pdf,content_type = "application/pdf")
             filename = slug+"_"+slug1+"_"+slug2+".pdf"
@@ -76,26 +153,66 @@ class GeneratePdf_date(View):
             return response
         return HttpResponse("Not Found")
 
+def excel_download(request,slug):
+    today = date.today()
+    start_of_yr = today.replace(day =1, month=4)
+    end_of_yr = start_of_yr + relativedelta(months=11,days=31) - timedelta(days=1)
+    board = Dashboard.objects.filter(expenses_details=slug,date__gte=start_of_yr, date__lte=end_of_yr)
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="users.xls"'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Users', cell_overwrite_ok=True)
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    font_date= xlwt.XFStyle()
+    font_date.num_format_str = 'D-MMM-YY'
+    columns = ['date','expenses_details','description','heads','receviable','payment']
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+    font_style = xlwt.XFStyle()
+    # x = datetime.strptime(date, "%d/%m/%Y")
+    rows = Dashboard.objects.filter(expenses_details=slug,date__gte=start_of_yr, date__lte=end_of_yr).values_list('date', 'expenses_details', 'description', 'heads', 'receviable', 'payment')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+            ws.write(row_num, 0, row[0], font_date)
+    wb.save(response)
+    return response
+    
 
-# def pdf_download(request):
-#     import sys
-#     from importlib import reload
-#     from django.core.files.storage import FileSystemStorage
-#     from weasyprint import HTML
-#     from django.template.loader import render_to_string
-#     reload(sys)
-#     board = Dashboard.objects.all()
-#     html_string = render_to_string('pdf_template.html', {'paragraphs': board})
-
-#     html = HTML(string=html_string)
-#     html.write_pdf(target='/tmp/mypdf.pdf');
-
-#     fs = FileSystemStorage('/tmp')
-#     with fs.open('mypdf.pdf') as pdf:
-#         response = HttpResponse(pdf, content_type='application/pdf')
-#         response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
-#         return response 
-
+def excel_download_date(request,slug,slug1,slug2,*args, **kwargs):
+    today = date.today()
+    board = Dashboard.objects.filter(expenses_details=slug,date__gte=slug1, date__lte=slug2)
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="users.xls"'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Users', cell_overwrite_ok=True)
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    font_date= xlwt.XFStyle()
+    font_date.num_format_str = 'D-MM-YY'  #DD-MMM-YY
+    style_vh_center = xlwt.easyxf('align: vert centre, horiz centre;''font: colour green, bold True;')
+    # ws.write(0, 0, font_style)
+    columns = ['date','expenses_details','description','heads','receviable','payment']
+    for col_num in range(len(columns)):
+       # ws.write_merge(0, 0,0, 10, "heading for excel \n hello world", style_vh_center)
+        ws.write_merge(0,0,0, 10, "heading2 for excel \n hello world", style_vh_center)
+    for col_num in range(len(columns)):
+        row_num = 2     
+        ws.write(row_num, col_num, columns[col_num], font_style)
+    font_style = xlwt.XFStyle()    
+    rows = Dashboard.objects.filter(expenses_details=slug,date__gte=slug1, date__lte=slug2).values_list('date', 'expenses_details', 'description', 'heads', 'receviable', 'payment')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+            ws.write(row_num, 0, row[0], font_date)
+    
+    wb.save(response)
+    return response
 
 def home(request):
     return render(request,'index.html',locals())
@@ -239,6 +356,8 @@ def dashboard(request):
     current_year = datetime.now().year
     board = Dashboard.objects.all()
     total_listrec = []
+    total_recsum = 0
+    total_paysum = 0
     total_recall = Dashboard.objects.all()
     for i in total_recall:
         total_listrec.append(i.receviable)
@@ -274,28 +393,84 @@ def dashboard(request):
 
 def layerdetail(request,slug):
     current_year = datetime.now().year
+    today = date.today()
+    start_of_yr = today.replace(day = 1, month=4)
+    end_of_yr = start_of_yr + relativedelta(months=11,days=31) - timedelta(days=1)
+    # return HttpResponse(end_of_yr)
     total_listrec = []
     total_listpay = []
-    board = Dashboard.objects.filter(expenses_details=slug)
-    total_recall = Dashboard.objects.filter(expenses_details=slug)
+    board = Dashboard.objects.filter(expenses_details=slug, date__gte=start_of_yr, date__lte=end_of_yr)
+    total_recall = Dashboard.objects.filter(expenses_details=slug, date__gte=start_of_yr, date__lte=end_of_yr)
+    try:
+        for i in total_recall:
+            total_listrec.append(i.receviable)
+            total_recsum = sum(total_listrec)
+            total_r = sum(total_listrec)
+        total_payall = Dashboard.objects.filter(expenses_details=slug, date__gte=start_of_yr, date__lte=end_of_yr)
+        for j in total_payall:
+            total_listpay.append(j.payment)
+            total_paysum = sum(total_listpay)
+            total_p = sum(total_listpay)
+            # diff_total = total_recsum - total_paysum
+        if total_recsum >  total_paysum:
+            tr = total_recsum - total_paysum
+            total_paysum = total_paysum + tr
+            # return HttpResponse("tr {{tr}}")
+            # tp = 0.0
+            total_sum = total_paysum
+
+        elif total_paysum > total_recsum:
+            tp = total_paysum - total_recsum
+            total_recsum = total_recsum + tp
+            # tr = 0.0
+            total_sum = total_recsum
+            # return HttpResponse("tp",tp)
+
+        # start_date = ""
+        # end_date = ""
+        if request.method == "POST":
+            start_date = request.POST["start_date"]
+            end_date = request.POST["end_date"]
+            # return HttpResponse(start_date)
+            return HttpResponseRedirect("/layer-detail-date/"+slug+"/"+start_date+"/"+end_date+"/")
+    except:
+        return HttpResponse("no records")  
+    return render(request,'layer_detail.html',locals())
+
+def layerdetail_date(request,slug,slug1,slug2):
+    board = Dashboard.objects.filter(expenses_details=slug, date__gte=slug1, date__lte=slug2)
+    # return HttpResponse(board)
+
+    total_listrec = []
+    total_listpay = []
+    total_recsum = 0
+    total_paysum = 0
+    total_recall = Dashboard.objects.filter(expenses_details=slug, date__gte=slug1, date__lte=slug2)
     for i in total_recall:
         total_listrec.append(i.receviable)
         total_recsum = sum(total_listrec)
-        total_payall = Dashboard.objects.filter(expenses_details=slug)
+        total_r = sum(total_listrec)
+    total_payall = Dashboard.objects.filter(expenses_details=slug, date__gte=slug1, date__lte=slug2)
     for j in total_payall:
         total_listpay.append(j.payment)
         total_paysum = sum(total_listpay)
-        diff_total = total_recsum - total_paysum
-    # start_date = ""
-    # end_date = ""
-    if request.method == "POST":
-        start_date = request.POST["start_date"]
-        end_date = request.POST["end_date"]
-        # return HttpResponse(start_date)
-        return HttpResponseRedirect("/down/"+slug+"/"+start_date+"/"+end_date+"/")
+        total_p = sum(total_listpay)
+        # diff_total = total_recsum - total_paysum
+    if total_recsum >  total_paysum:
+        tr = total_recsum - total_paysum
+        total_paysum = total_paysum + tr
+        # return HttpResponse("tr {{tr}}")
+        # tp = 0.0
+        total_sum = total_paysum
 
-    return render(request,'layer_detail.html',locals())
+    elif total_paysum > total_recsum:
+        tp = total_paysum - total_recsum
+        total_recsum = total_recsum + tp
+        # tr = 0.0
+        total_sum = total_recsum
+        # return HttpResponseRedirect("/down/"+slug+"/"+start_date+"/"+end_date+"/")
 
+    return render(request,'layer_detail_date.html',locals())
 
 def pdf_month(request,slug,slug1, slug2):
     current_year = datetime.now().year
@@ -303,8 +478,6 @@ def pdf_month(request,slug,slug1, slug2):
     # slug2 =datetime.strptime(slug2, "%Y-%m-%d")
     # return HttpResponse(slug1)
     board = Dashboard.objects.filter(expenses_details=slug, date__gte=slug1, date__lte=slug2)
-    # return HttpResponse(board)
-
     total_listrec = []
     total_listpay = []
     total_recall = Dashboard.objects.filter(expenses_details=slug, date__gte=slug1, date__lte=slug2)
@@ -321,7 +494,6 @@ def pdf_month(request,slug,slug1, slug2):
 
 def check_report(request):
     current_year = datetime.now().year
-    # current_month = datetime.now().month
     if request.method == "POST":
         cur_year = request.POST['select_year']
         cur_month = request.POST['select_month']

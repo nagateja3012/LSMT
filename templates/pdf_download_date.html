@@ -19,7 +19,7 @@
         </style>
     </head>
     <body>
-            <h2 class="title_middle">{{ board.0.expenses_details }}<br>{{start_of_yr}} to {{end_of_yr}}</h2>
+            <h2 class="title_middle">{{ board.0.expenses_details }}<br>{{slug1}} to {{slug2}}</h2>
             <p class="title_middle">{{ board.0.address_detail.house_number }}<br>
             {{ board.0.address_detail.city }}<br>
             {{ board.0.address_detail.state }}<br>
@@ -47,7 +47,7 @@
                 <td>{{ board.description }}</td>
                 <td>{{ board.heads }}</td>
                 {% if board.receviable == 0.0 %}
-                <td style="text-align:right !important"></td>
+                    <td style="text-align:right !important"></td>
                 {% else %}
                 <td style="text-align:right !important">{{board.receviable}}</td>
                 {% endif %}

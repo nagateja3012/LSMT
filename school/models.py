@@ -17,7 +17,22 @@ heads = (
 ('Advances', 'Advances'),
 )
 
+class Address_Ledger(models.Model):
+    ledger_code = models.CharField(max_length=255, blank=True)
+    house_number = models.CharField(max_length=255)
+    street = models.CharField(max_length=255, blank=True)
+    area = models.CharField(max_length=255, blank=True, null=True)
+    colony = models.CharField(max_length=255, blank=True, null=True)
+    city = models.CharField(max_length=255)
+    state = models.CharField(max_length=255)
+    country = models.CharField(max_length=255)
+    pincode = models.IntegerField()
+
+    def __str__(self):
+        return self.ledger_code
+
 class Dashboard(models.Model):
+    address_detail = models.ForeignKey(Address_Ledger,blank=True, null=True,on_delete=models.CASCADE)
     heads = models.CharField(choices=heads,max_length=255)
     description = models.CharField(max_length=255, blank=True)
     document = models.FileField(upload_to='Dashboard',null=True,blank=True)

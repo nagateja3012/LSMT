@@ -4,7 +4,8 @@
 {% block keyword %}{% endblock %}
 {% load static %}
 {% block content %}
-<link href='https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css' rel='stylesheet'> 
+<link href= 
+'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css' rel='stylesheet'> 
 <script src= "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"> </script> 
 <script src= "https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"> </script>
 <script> 
@@ -12,27 +13,23 @@
         $(function() { 
             $( "#my_date_picker" ).datepicker(); 
         }); 
-
     }) 
-	$( ".start_date" ).datepicker({
-	  defaultDate: +7
-	});
 </script> 
 <div class="container">
 	<div class="row">
 		<div class="col-sm-12 col-md-12 col-xs-12">
-			<button type="button"><a href="/pdf/{{slug}}" target="_blank"> PDF Download</a></button><br>
-			<button type="button"><a href="/excel/{{slug}}/" target="_blank"> Excel Download</a></button><br>
-			<form method="POST" action="" target="_blank">
+			<button type="button"><a href="/down/{{slug}}/{{slug1}}/{{slug2}}/" target="_blank">PDF Download</a></button><br>
+			<button type="button"><a href="/excel-data/{{slug}}/{{slug1}}/{{slug2}}/" target="_blank">Excel Download</a></button><br>
+			<!-- <form method="POST" action="" target="_blank">
 				{% csrf_token %}
-				<input class="border_foot start_date" type="date" id="my_date_picker" name="start_date" placeholder="Enter MM/DD/YYYY" required="">
+				<input class="border_foot" type="date" id="my_date_picker" name="start_date" placeholder="Enter MM/DD/YYYY" required="">
 				<input class="border_foot" type="date" id="my_date_picker" name="end_date" placeholder="Enter MM/DD/YYYY" required="">
 				<button type="submit" value="submit">Submit</button>
-			</form>
+			</form> -->
 			<table>
 				<thead>
 					<tr>
-   						 <th colspan="5" class="title_dash" style="text-transform: capitalize;background-color: #5d50c6 !important;">{{slug}}</th>
+   						<th colspan="5" class="title_dash" style="text-transform: capitalize;background-color: #5d50c6 !important;">{{board.0.expenses_details}}<br>{{slug1}} to {{slug2}}</th>
   					</tr>
   				</thead>
 				<thead style="background-color: #69bc5f !important;">
@@ -68,7 +65,7 @@
 					<tr>
 						<td></td>
 						<td></td>
-						<td style="text-align:center !important">Difference(Receviable & payment)</td>
+						<td style="text-align:center !important">Closing Balance</td>
 						<td style="text-align:right !important">{{tp}}</td>
 						<td style="text-align:right !important">{{tr}}</td>
 					</tr>
@@ -91,13 +88,5 @@
 		</div>
 	</div>
 </div>
-<script src="{% static 'js/ajax-jquery.min.js' %}"></script>
-<script type="text/javascript">
-/*$("#displaytable").hide();
-*/$(document).ready(function(){
 
-    $('[name="start_date"]').val( '{{start_of_yr | date:"m/d/yy"}}' );
-    $('[name="end_date"]').val( '{{end_of_yr | date:"m/d/yy"}}' );
-});
-</script>
 {% endblock %}

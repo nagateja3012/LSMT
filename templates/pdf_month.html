@@ -1,4 +1,71 @@
-<div class="container">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <style>
+            table {
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            th {
+                border-top: 1px solid black;
+                border-bottom: 1px solid black;
+                border-collapse: collapse;
+                padding-top: 8px;
+                padding-bottom: 8px;
+                text-align: center;
+            }
+            td{
+                padding-top: 8px;
+                padding-bottom: 8px;
+                text-align: center;
+            }
+            .title_pdf{text-align: center;padding-bottom: 0px !important;}
+        </style>
+    </head>
+    <body>
+    	<button type="button"><a href="/{{slug}}/{{slug1}}/{{slug2}}/" target="_blank">Download</a></button><br>
+        <div class="title_pdf">
+            <p><b style="font-size: 20px;">{{ board.0.expenses_details }}</b><br>
+            {{ board.0.address_detail.house_number }}<br>
+            {{ board.0.address_detail.city }}<br>
+            {{ board.0.address_detail.state }}<br>
+            {{ board.0.address_detail.country }}<br>
+            {{ board.0.address_detail.pincode }}</p>
+        </div>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Details</th>
+                <th>description</th>
+                <th>heads</th>
+                <th>Receviable</th>
+                <th>Payment</th>
+            </tr>
+            {% for board in board %}
+            <tr>
+                <td>{{ board.date |date:'Y-m-d' }}</td>
+                <td>{{ board.expenses_details }}</td>
+                <td>{{ board.description }}</td>
+                <td>{{ board.heads }}</td>
+                {% if board.receviable == 0.0 %}
+                    <td></td>
+                {% else %}
+                <td>{{board.receviable}}</td>
+                {% endif %}
+                {% if board.payment == 0.0 %}
+                    <td></td>
+                {% else %}
+                <td>{{board.payment}}</td>
+                {% endif %}
+            </tr>
+            {% endfor %} 
+        </table>
+    </body>
+</html>
+
+<!-- <div class="container">
 	<div class="row">
 		<div class="col-sm-12 col-md-12 col-xs-12">
 			<button type="button"><a href="/{{slug}}/{{slug1}}/{{slug2}}/" target="_blank">Download</a></button><br>
@@ -10,10 +77,12 @@
   				</thead>
 				<thead style="background-color: #69bc5f !important;">
 					<tr>
-						<th width="12%" class="school_activity">Date</th>
-						<th width="30%" class="school_activity">Heads</th>
-						<th width="10%" class="school_activity">Receviable</th>
-						<th width="10%" class="school_activity">Payment</th>
+						<th>Date</th>
+						<th>Details</th>
+		                <th>description</th>
+		                <th>heads</th>
+						<th>Receviable</th>
+						<th>Payment</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -41,4 +110,4 @@
 			</table>
 		</div>
 	</div>
-</div>
+</div> -->
